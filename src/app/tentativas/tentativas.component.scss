@@ -1,0 +1,22 @@
+@import '~sass/variables';
+@import '~sass/mixins';
+
+.vida-container{
+}
+.vida-empty{
+    color:$corHeart;
+    font-size:30px;
+    margin:auto 10px;
+}
+.vida-full{
+    @extend .vida-empty;
+}
+
+.vida-container{
+    margin-top: 10px;
+    
+}
+
+@media ( min-width:575px ){
+    .vida-container{ margin-top:0; }
+}

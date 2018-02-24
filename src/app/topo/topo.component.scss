@@ -1,0 +1,10 @@
+@import '~sass/variables';
+@import '~sass/mixins';
+
+#topo{
+    width:100%;
+    display:block;
+    > div{
+    }
+    background: $backgroundPrimario;
+}
