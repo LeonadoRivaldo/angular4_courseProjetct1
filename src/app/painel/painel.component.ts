@@ -16,6 +16,7 @@ export class PainelComponent implements OnInit {
   public disabled:boolean = true;
   private resposta:string;
   private life:number = 3;
+  public progress:number = 0;
 
   constructor() { }
 
@@ -30,14 +31,34 @@ export class PainelComponent implements OnInit {
   }
 
   public validar():void{
-    if( this.resposta === this.frases[this.dungeon].frasePtBr ){
-        this.dungeon++;
+
+    //validação da resposta
+    if( this.resposta.toLowerCase() === this.frases[this.dungeon].frasePtBr.toLowerCase() ){
+      
+      //verifica fim do jogo
+      if( this.dungeon === (this.frases.length-1) ){
+        this.game_phrase = "Você terminou o jogo!";
+        this.disabled = true;
+        this.progress = 100;
+        //this.frases.push(new Frase("END GAME!", "FIM DE JOGO!"));
+      }else{
+        //incrementa para proxima rodada
+        this.dungeon++;        
+        //controle de progresso
+        this.progress += (Math.ceil(100/this.frases.length));
+
+        //zera resposta
+        this.resposta = "";
+        (<HTMLInputElement>document.getElementById("traduza")).value = "";
+      }
     }else{
         this.life--;
-      if( this.life === 0 ){
+      if( this.life === -1 ){
         this.game_phrase = "Você perdeu!";
       }
     }
+
+    console.log(this.progress);
   }
 
 }
