@@ -1,4 +1,12 @@
 <div class="container">
     <app-topo></app-topo>
-    <app-painel></app-painel>
-</div>
+    <div  *ngIf="jogoemandamento; else fimDeJogo">
+        <app-painel (encerrarJogo)="encerrarJogo($evento)"></app-painel>
+    </div>
+    <ng-template #fimDeJogo>
+        <div class="painel">
+            <h3 [innerHTML]="endphrase" style="margin:20px 0;"></h3>
+            <button class="btn btn-secundary" (click)="resete()">Resete</button>
+        </div>
+    </ng-template>
+</div> 

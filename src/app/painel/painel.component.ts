@@ -1,64 +1,87 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, OnDestroy } from '@angular/core';
 
 import { Frase } from '../shared/frase.model';
 import { FRASES  } from './frase-mock';
+
 
 @Component({
   selector: 'app-painel',
   templateUrl: './painel.component.html',
   styleUrls: ['./painel.component.scss']
 })
-export class PainelComponent implements OnInit {
+export class PainelComponent implements OnInit, OnDestroy {
 
-  public game_phrase = "Traduza essa frase?"
-  public frases: Frase[] = FRASES;
-  public dungeon:number = 0;
-  public disabled:boolean = true;
+  //private variables
+  private game_phrase;
+  private frases: Frase[];
+  private dungeon:number;
+  private disabled:boolean;
   private resposta:string;
-  private life:number = 3;
-  public progress:number = 0;
+  private tentativas:number = 0;
+  
+  //public variables
+  public life:number;
+  public progress:number;
+  @Output() public encerrarJogo: EventEmitter<any> = new EventEmitter<any>();
 
-  constructor() { }
+  constructor() {
+    this.game_phrase = "Traduza essa frase?"
+    this.frases = FRASES;
+    this.dungeon = 0;
+    this.disabled = true;
+    this.resposta = "";
+    this.life = 3;
+    this.progress = 0;
+  }
 
   ngOnInit() {
   }
+  
+  ngOnDestroy(){
+    console.log("painel destruido!");
+  }
 
-  public atualizarResposta(event:Event):void{
+  private atualizarResposta(event:any):void{
     this.resposta = (<HTMLInputElement>event.target).value;
-    if(this.resposta.length >= this.frases[this.dungeon].frasePtBr.length){
+    if(this.resposta.length >= (this.frases[this.dungeon].frasePtBr.length-1)){
       this.disabled = false;
+      if( event.keyCode === 13 ){
+        this.validar();
+      }
     }
   }
 
-  public validar():void{
+  private validar():void{
 
     //validação da resposta
     if( this.resposta.toLowerCase() === this.frases[this.dungeon].frasePtBr.toLowerCase() ){
       
       //verifica fim do jogo
       if( this.dungeon === (this.frases.length-1) ){
-        this.game_phrase = "Você terminou o jogo!";
-        this.disabled = true;
+        this.encerrarJogo.emit(true);
         this.progress = 100;
         //this.frases.push(new Frase("END GAME!", "FIM DE JOGO!"));
       }else{
         //incrementa para proxima rodada
-        this.dungeon++;        
+        this.dungeon++;
+        this.tentativas++;    
         //controle de progresso
         this.progress += (Math.ceil(100/this.frases.length));
-
-        //zera resposta
-        this.resposta = "";
-        (<HTMLInputElement>document.getElementById("traduza")).value = "";
       }
     }else{
         this.life--;
       if( this.life === -1 ){
-        this.game_phrase = "Você perdeu!";
+        this.encerrarJogo.emit(false);
       }
     }
 
-    console.log(this.progress);
+    //console.log(this.progress);
   }
 
+  private zerarResposta():void{
+    setTimeout(()=>{
+      this.resposta = ""
+      this.disabled = true;
+    }, 10 );
+  }
 }

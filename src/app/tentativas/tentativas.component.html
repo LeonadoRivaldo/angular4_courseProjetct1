@@ -1,6 +1,3 @@
 <div class="vida-container d-flex justify-content-end">
-  <i class="fa-heart {{vidaclass}}" ></i>
-  <i class="fa-heart {{vidaclass}}"></i>
-  <i class="fa-heart {{vidaclass}}" ></i>
-  <!-- <i class="far fas fa-heart vida-empty"></i> -->
+  <i *ngFor="let vida of vidas" class="fa-heart {{vida.getVidaClass()}}" ></i>
 </div>
